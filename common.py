@@ -2,7 +2,9 @@ import sys
 import socket
 
 MSG = b'x' * int(1 * 10 ** 3.5)
+MSG2 = b'10001'*(10**8*2)
 MSG_LENGTH = sys.getsizeof(MSG)
+MSG2_LENGTH = sys.getsizeof(MSG2)
 SEND_BUF_SIZE = int(2.5E6)
 RECV_BUF_SIZE = int(2.5E6)
 
@@ -18,6 +20,7 @@ def sizeof_fmt(num, suffix='B'):
     return "%.1f%s%s" % (num, 'Yi', suffix)
 
 print('message length', sizeof_fmt(MSG_LENGTH))
+print('message2 length', sizeof_fmt(MSG2_LENGTH))
 
 
 def configure_socket(s):
