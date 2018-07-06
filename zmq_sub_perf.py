@@ -4,6 +4,8 @@ import common
 
 import zmq
 
+# Warning - results in a giagantic memory leak
+
 port = "5556"
 if len(sys.argv) > 1:
     port = sys.argv[1]
@@ -29,16 +31,18 @@ socket.setsockopt(zmq.SUBSCRIBE, topicfilter)
 
 total_size = 0
 start = time.time()
-end = start
-for update_nbr in range(100):
+last = start
+for update_nbr in range(10):
     string = socket.recv()
     topic, index, data = string.split()
     size = sys.getsizeof(data)
     total_size += size
     print('received data size of %r index %r' % (size, index))
     now = time.time()
+    del data
+    del string
 
-    if now - end > 1:
+    if now - last > 1:
         print("bandwidth is %dMB/s" % (total_size / (now - start) // 10**6))
         print("bandwidth is %s/s" % common.sizeof_fmt(total_size / (now - start)))
-        end = now
+        last = now
