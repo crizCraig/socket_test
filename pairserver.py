@@ -5,12 +5,34 @@ import time
 
 import common
 
-port = "5556"
-context = zmq.Context()
-socket = context.socket(zmq.PAIR)
-socket.bind("tcp://*:%s" % port)
 
-while True:
-    socket.send(common.MSG2)
-    msg = socket.recv()
-    time.sleep(0.125)
+
+
+def setup(socket=None):
+    if socket:
+        socket.close()
+    port = "5556"
+    context = zmq.Context()
+    socket = context.socket(zmq.PAIR)
+    socket.RCVTIMEO = 5000
+    socket.SNDTIMEO = 5000
+    socket.bind("tcp://*:%s" % port)
+    return socket
+
+
+def run():
+    socket = setup()
+    while True:
+        try:
+            socket.send(common.MSG2)
+            print('waiting for msg')
+            msg = socket.recv()
+            print(msg)
+            time.sleep(0.125)
+        except zmq.error.Again:
+            print('Waiting for client')
+            socket = setup(socket)
+
+
+if __name__ == '__main__':
+    run()
