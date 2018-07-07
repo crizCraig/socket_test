@@ -2,8 +2,10 @@ import zmq
 import random
 import sys
 import time
+import pyarrow
 
 import common
+
 
 def setup(socket=None):
     if socket:
@@ -32,6 +34,8 @@ def run():
         try:
             data = socket.recv()
             size = sys.getsizeof(data)
+            nparray = pyarrow.deserialize(data)
+            print('nparray shape', nparray.shape)
             # del data
             total_size += size
             socket.send(b"client message to server %d" % index)

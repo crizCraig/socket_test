@@ -1,3 +1,4 @@
+import pyarrow
 import zmq
 import random
 import sys
@@ -24,7 +25,7 @@ def run():
     socket = setup()
     while True:
         try:
-            socket.send(common.MSG2)
+            socket.send(pyarrow.serialize(common.NUMPY_ARRAY).to_buffer())
             print('waiting for msg')
             msg = socket.recv()
             print(msg)

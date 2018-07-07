@@ -4,7 +4,7 @@ import numpy as np
 
 MSG = b'x' * int(1 * 10 ** 3.5)
 MSG2 = b'10001'*(10**8*2)
-NUMPY_ARRAY = np.random.rand(3,2)
+NUMPY_ARRAY = np.random.rand(10000, 10000)
 MSG_LENGTH = sys.getsizeof(MSG)
 MSG2_LENGTH = sys.getsizeof(MSG2)
 SEND_BUF_SIZE = int(2.5E6)
@@ -39,5 +39,4 @@ def configure_socket(s):
         RECV_BUF_SIZE)
     buffer_size = s.getsockopt(socket.SOL_SOCKET, socket.SO_SNDBUF)
     print("Buffer size [After]:%d" % buffer_size)
-
 
