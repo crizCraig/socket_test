@@ -3,6 +3,7 @@ import random
 import sys
 import time
 import pyarrow
+import numpy as np
 
 import common
 
@@ -34,7 +35,7 @@ def run():
         try:
             data = socket.recv()
             size = sys.getsizeof(data)
-            nparray = pyarrow.deserialize(data)
+            nparray = np.frombuffer(data)
             print('nparray shape', nparray.shape)
             # del data
             total_size += size

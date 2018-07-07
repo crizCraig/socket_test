@@ -25,7 +25,7 @@ def run():
     socket = setup()
     while True:
         try:
-            socket.send(pyarrow.serialize(common.NUMPY_ARRAY).to_buffer())
+            socket.send(common.NUMPY_ARRAY.tobytes())
             print('waiting for msg')
             msg = socket.recv()
             print(msg)
