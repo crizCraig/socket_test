@@ -19,8 +19,6 @@ def setup(socket=None):
 
     poller = zmq.Poller()
     poller.register(socket, zmq.POLLIN | zmq.POLLOUT)
-    while dict(poller.poll())[socket] != zmq.POLLOUT:
-        time.sleep(0.001)
 
     return socket, poller
 

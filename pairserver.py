@@ -20,8 +20,6 @@ def setup(socket=None):
 
     poller = zmq.Poller()
     poller.register(socket, zmq.POLLIN | zmq.POLLOUT)
-    while dict(poller.poll())[socket] != zmq.POLLOUT:
-        time.sleep(0.001)
 
     return socket, poller
 
@@ -34,7 +32,7 @@ def run():
             print('waiting for msg')
             msg = wait_for_msg(socket, poller)
             print(msg)
-            time.sleep(0.125)
+            # time.sleep(0.125)
         except zmq.error.Again:
             print('Waiting for client')
             socket = setup(socket)
