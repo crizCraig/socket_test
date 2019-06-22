@@ -13,10 +13,16 @@ def setup(socket=None):
     port = "5556"
     context = zmq.Context()
     socket = context.socket(zmq.PAIR)
-    socket.RCVTIMEO = 5000
-    socket.SNDTIMEO = 5000
+    # socket.RCVTIMEO = 5000
+    # socket.SNDTIMEO = 5000
     socket.connect("tcp://localhost:%s" % port)
-    return socket
+
+    poller = zmq.Poller()
+    poller.register(socket, zmq.POLLIN | zmq.POLLOUT)
+    while dict(poller.poll())[socket] != zmq.POLLOUT:
+        time.sleep(0.001)
+
+    return socket, poller
 
 
 def run():
@@ -28,17 +34,23 @@ def run():
 
     index = 0
 
-    socket = setup()
+    socket, poller = setup()
 
     while True:
         try:
-            data = socket.recv()
-            size = sys.getsizeof(data)
-            nparray = pyarrow.deserialize(data)
-            print('nparray shape', nparray.shape)
-            # del data
-            total_size += size
-            socket.send(b"client message to server %d" % index)
+            start_recv = time.time()
+            socks = dict(poller.poll())
+            if socket in socks and socks[socket] == zmq.POLLOUT|zmq.POLLIN:
+                data = socket.recv()
+                print('recv took %rs' % (time.time() - start_recv))
+                size = sys.getsizeof(data)
+                nparray = pyarrow.deserialize(data)
+                print('nparray shape', nparray.shape)
+                # del data
+                total_size += size
+                socket.send(b"client message to server %d" % index)
+            else:
+                time.sleep(1e-6)
         except zmq.error.Again:
             print('Waiting for server')
             socket = setup(socket)
