@@ -33,7 +33,9 @@ def run():
 
     while True:
         try:
+            start_recv = time.time()
             data = socket.recv()
+            print('recv took %rs' % (time.time() - start_recv))
             size = sys.getsizeof(data)
             nparray = np.frombuffer(data)
             print('nparray shape', nparray.shape)
