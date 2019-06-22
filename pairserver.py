@@ -7,8 +7,6 @@ import time
 import common
 
 
-
-
 def setup(socket=None):
     if socket:
         socket.close()
@@ -29,7 +27,6 @@ def run():
             print('waiting for msg')
             msg = socket.recv()
             print(msg)
-            time.sleep(0.125)
         except zmq.error.Again:
             print('Waiting for client')
             socket = setup(socket)
